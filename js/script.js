@@ -1,5 +1,7 @@
 'use strict';
 
+document.addEventListener("DOMContentLoaded", () => { 
+
 const movieDB = {
     movies: [
         "Логан",
@@ -16,26 +18,59 @@ const advert = document.querySelectorAll(".promo__adv img");
 const poster = document.querySelector(".promo__bg");
 const genre = poster.querySelector(".promo__genre");
 const movieList = document.querySelector(".promo__interactive-list");
-// const movieItem = movieList.querySelectorAll(".promo__interactive-item");
+const addForm = document.querySelector("form.add");
+const addInput = addForm.querySelector(".adding__input");
+const checkboxForm = addForm.querySelector("[type='checkbox']");
 
-advert.forEach(item =>{
-    item.remove();
+
+// Add new movie
+addForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const newFilm = addInput.value;
+    const favorite = checkboxForm.checked;
+
+    movieDB.movies.push(newFilm);
+    sortArr(movieDB.movies);
+
+    createMovie(movieDB.movies, movieList);
+
+    e.target.reset();
+
 });
 
-// Change genre and background
-genre.textContent = "драма";
-poster.style.backgroundImage = `url("img/bg.jpg")`;
+const deleteAdv = (arr) => {
+    arr.forEach(item => {
+        item.remove();
+    });
+};
 
+// Change genre and background
+
+const makeChanges = () => {
+    genre.textContent = "драма";
+    poster.style.backgroundImage = "url('img/bg.jpg')";
+};
 
 // List of movie  and sort
+const sortArr = (arr) => {
+    arr.sort();
+};
 
-movieList.innerHTML = "";
-movieDB.movies.sort();
+function createMovie(films,parent){
+    parent.innerHTML = "";
 
-movieDB.movies.forEach((film, i) => {
-    movieList.innerHTML += `
-    <li class="promo__interactive-item">${i + 1} ${film}
-        <div class="delete"></div>
-    </li>
-    `;
+    films.forEach((film, i) => {
+        parent.innerHTML += `
+        <li class="promo__interactive-item">${i + 1} ${film}
+            <div class="delete"></div>
+        </li>
+        `;
+    });
+}
+
+deleteAdv(advert);
+makeChanges();
+sortArr(movieDB.movies);
+createMovie(movieDB.movies, movieList);
+
 });
