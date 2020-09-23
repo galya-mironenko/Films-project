@@ -12,8 +12,6 @@ const movieDB = {
     ]
 };
 
-// Delete advertising
-
 const advert = document.querySelectorAll(".promo__adv img");
 const poster = document.querySelector(".promo__bg");
 const genre = poster.querySelector(".promo__genre");
@@ -26,17 +24,28 @@ const checkboxForm = addForm.querySelector("[type='checkbox']");
 // Add new movie
 addForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    const newFilm = addInput.value;
+    let newFilm = addInput.value.toUpperCase();
     const favorite = checkboxForm.checked;
 
-    movieDB.movies.push(newFilm);
-    sortArr(movieDB.movies);
+    if(newFilm){
 
-    createMovie(movieDB.movies, movieList);
+        if(newFilm.length > 21){
+            newFilm = `${newFilm.substring(0, 22)}...`;
+        }
+
+        if(favorite){
+            console.log("Добавляем любимый фильм");
+        }
+        movieDB.movies.push(newFilm);
+        sortArr(movieDB.movies);
+
+        createMovie(movieDB.movies, movieList);
+    }
 
     e.target.reset();
-
 });
+
+// Delete advertising
 
 const deleteAdv = (arr) => {
     arr.forEach(item => {
@@ -59,6 +68,8 @@ const sortArr = (arr) => {
 function createMovie(films,parent){
     parent.innerHTML = "";
 
+    sortArr(films);
+
     films.forEach((film, i) => {
         parent.innerHTML += `
         <li class="promo__interactive-item">${i + 1} ${film}
@@ -66,11 +77,20 @@ function createMovie(films,parent){
         </li>
         `;
     });
+
+    // Delete Movie
+
+    document.querySelectorAll(".delete").forEach((btn,i) => {
+        btn.addEventListener("click", () =>{
+            btn.parentElement.remove();
+            movieDB.movies.splice(i, 1);
+            createMovie(films, parent);
+        });
+    });
 }
 
 deleteAdv(advert);
 makeChanges();
-sortArr(movieDB.movies);
 createMovie(movieDB.movies, movieList);
 
 });
